@@ -1,5 +1,5 @@
 class Escena extends Phaser.Scene {
-    preload(){
+    preload() {
         this.load.image('fondo', 'img/fondo.jpg');
         this.load.spritesheet('bola', 'img/bola.png', {
             frameWidth: 100,
@@ -11,13 +11,13 @@ class Escena extends Phaser.Scene {
         this.load.image('leftbtn', 'img/flecha.png');
     }
 
-    create(){
+    create() {
         this.input.addPointer();
         this.input.addPointer();
         this.input.addPointer();
 
-        this.add.sprite(480,320, 'fondo');
-        this.bola = this.physics.add.sprite(480,320,'bola');
+        this.add.sprite(480, 320, 'fondo');
+        this.bola = this.physics.add.sprite(480, 320, 'bola');
 
         this.anims.create({
             key: 'brillar',
@@ -30,22 +30,28 @@ class Escena extends Phaser.Scene {
         });
         this.bola.play('brillar');
         this.bola.setBounce(1);
-
-        this.mano1 = this.physics.add.sprite(70,320, 'mano1');
+        //primer jugador
+        this.mano1 = this.physics.add.sprite(70, 320, 'mano1');
         this.mano1.body.immovable = true;
+        this.bola.setBounce(10);
+        this.mano1.setSize(60, 250);
         this.physics.add.collider(this.bola, this.mano1);
+        this.mano1.setCollideWorldBounds(true);
 
-        this.mano2 = this.physics.add.sprite(882,320, 'mano2');
+        this.mano2 = this.physics.add.sprite(882, 320, 'mano2');
         this.mano2.body.immovable = true;
+        this.mano2.setBounce(10);
+        this.mano1.setSize(60, 250);
         this.physics.add.collider(this.bola, this.mano2);
+        this.mano1.setCollideWorldBounds(true);
 
         const velocidad = 500;
-        let anguloInicial = Math.random()*Math.PI / 2 + Math.PI /4;
-        const derechaOIzq = Math.floor(Math.random()*2);
+        let anguloInicial = Math.random() * Math.PI / 2 + Math.PI / 4;
+        const derechaOIzq = Math.floor(Math.random() * 2);
         if (derechaOIzq === 1) anguloInicial = anguloInicial + Math.PI;
 
-        const vx = Math.sin(anguloInicial)*velocidad;
-        const vy = Math.cos(anguloInicial)*velocidad;
+        const vx = Math.sin(anguloInicial) * velocidad;
+        const vy = Math.cos(anguloInicial) * velocidad;
 
         this.bola.setBounce(1);
         this.bola.setCollideWorldBounds(true);
@@ -55,33 +61,37 @@ class Escena extends Phaser.Scene {
         this.bola.body.velocity.y = vy;
         this.cursors = this.input.keyboard.createCursorKeys();
 
-        this.controlesVisuales({ x:50, y:50 }, { x:50, y:590 }, this.mano1);
-        this.controlesVisuales({ x:910, y:50 }, { x:910, y:590 }, this.mano2);
+        this.controlesVisuales({ x: 50, y: 50 }, { x: 50, y: 590 }, this.mano1);
+        this.controlesVisuales({ x: 910, y: 50 }, { x: 910, y: 590 }, this.mano2);
 
         this.alguienGano = false;
+        this.pintarMarcador();
     }
 
-    update(){
+    update() {
         this.bola.rotation += 0.1;
 
-        if(this.bola.x < 0 && this.alguienGano === false) {
-            alert('Player 1 has perdido');
+        if (this.bola.x < 0 && this.alguienGano === false) {
+            alert('Player 1 ha perdido'); // Cambiado aquí
+            this.alguienGano = true;
+            this.marcadorMano2.text = parseInt(this.marcadorMano2.text) + 1;
             this.ColocarPelota();
-        } else if (this.bola.x > 960 && this.alguienGano === false){
+        } else if (this.bola.x > 960 && this.alguienGano === false) {
             alert('Player 2 has perdido');
             this.alguienGano = true;
+            this.marcadorMano1.text = parseInt(this.marcadorMano1.text) + 1;
             this.ColocarPelota();
         }
 
-        if (this.cursors.up.isDown || this.mano1.getData('direccionVertical') === 1){
+        if (this.cursors.up.isDown || this.mano1.getData('direccionVertical') === 1) {
             this.mano1.y -= 5;
-        } else if (this.cursors.down.isDown || this.mano1.getData('direccionVertical') === -1){
+        } else if (this.cursors.down.isDown || this.mano1.getData('direccionVertical') === -1) {
             this.mano1.y += 5;
         }
 
-        if (this.cursors.up.isDown || this.mano2.getData('direccionVertical') === 1){
+        if (this.cursors.up.isDown || this.mano2.getData('direccionVertical') === 1) {
             this.mano2.y -= 5;
-        } else if (this.cursors.down.isDown || this.mano2.getData('direccionVertical') === -1){
+        } else if (this.cursors.down.isDown || this.mano2.getData('direccionVertical') === -1) {
             this.mano2.y += 5;
         }
 
@@ -99,7 +109,27 @@ class Escena extends Phaser.Scene {
         }
     }
 
+    pintarMarcador() {
+        this.marcadorMano1 = this.add.text(440, 75, '0', {
+            fontFamily: 'font1',
+            fontSize: 80,
+            color: '#ffffff',
+            align: 'right'
+        }).setOrigin(1, 0);
+
+        this.marcadorMano2 = this.add.text(520, 75, '0', {
+            fontFamily: 'font1',
+            fontSize: 80,
+            color: '#ffffff'
+        });
+    }
+
     ColocarPelota() {
+        // Reiniciar la posición de la bola
+        this.bola.x = 480;
+        this.bola.y = 320;
+
+        // Generar un nuevo ángulo y velocidad
         const velocidad = 500;
         let anguloInicial = Math.random() * Math.PI / 2 + Math.PI / 4;
         const derechaOIzq = Math.floor(Math.random() * 2);
@@ -108,18 +138,11 @@ class Escena extends Phaser.Scene {
         const vx = Math.sin(anguloInicial) * velocidad;
         const vy = Math.cos(anguloInicial) * velocidad;
 
-        this.bola = this.physics.add.sprite(480, 320, 'bola');
-        this.bola.play('brillar');
-
-        this.bola.setBounce(1);
-        this.bola.setCollideWorldBounds(true);
-        this.physics.world.setBoundsCollision(false, false, true, true);
-
+        // Establecer la nueva velocidad
         this.bola.body.velocity.x = vx;
         this.bola.body.velocity.y = vy;
-        this.physics.add.collider(this.bola, this.mano1);
-        this.physics.add.collider(this.bola, this.mano2);
 
+        // Reiniciar el estado del juego
         this.alguienGano = false;
     }
 
@@ -157,3 +180,4 @@ const config = {
 };
 
 new Phaser.Game(config);
+
