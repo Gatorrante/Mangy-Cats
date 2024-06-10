@@ -7,7 +7,6 @@ class Escena extends Phaser.Scene {
         });
 
         this.load.image('mano1', 'img/mano1.png');
-        this.load.image('mano2', 'img/mano2.png');
         this.load.image('leftbtn', 'img/flecha.png');
     }
 
@@ -30,7 +29,8 @@ class Escena extends Phaser.Scene {
         });
         this.bola.play('brillar');
         this.bola.setBounce(1);
-        //primer jugador
+        
+        // Primer jugador
         this.mano1 = this.physics.add.sprite(70, 320, 'mano1');
         this.mano1.body.immovable = true;
         this.bola.setBounce(10);
@@ -38,12 +38,13 @@ class Escena extends Phaser.Scene {
         this.physics.add.collider(this.bola, this.mano1);
         this.mano1.setCollideWorldBounds(true);
 
-        this.mano2 = this.physics.add.sprite(882, 320, 'mano2');
+        // Segundo jugador usando el mismo sprite pero volteado
+        this.mano2 = this.physics.add.sprite(882, 320, 'mano1');
+        this.mano2.flipX = true; // Voltear horizontalmente
         this.mano2.body.immovable = true;
-        this.mano2.setBounce(10);
-        this.mano1.setSize(60, 250);
+        this.mano2.setSize(60, 250);
         this.physics.add.collider(this.bola, this.mano2);
-        this.mano1.setCollideWorldBounds(true);
+        this.mano2.setCollideWorldBounds(true);
 
         const velocidad = 500;
         let anguloInicial = Math.random() * Math.PI / 2 + Math.PI / 4;
@@ -72,7 +73,7 @@ class Escena extends Phaser.Scene {
         this.bola.rotation += 0.1;
 
         if (this.bola.x < 0 && this.alguienGano === false) {
-            alert('Player 1 ha perdido'); // Cambiado aquí
+            alert('Player 1 ha perdido');
             this.alguienGano = true;
             this.marcadorMano2.text = parseInt(this.marcadorMano2.text) + 1;
             this.ColocarPelota();
@@ -178,6 +179,4 @@ const config = {
         default: 'arcade',
     },
 };
-
 new Phaser.Game(config);
-
