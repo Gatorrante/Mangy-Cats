@@ -35,7 +35,6 @@ class Escena extends Phaser.Scene {
         this.bola.play('brillar');
         this.bola.setBounce(1);
         
-        // Primer jugador
         this.mano1 = this.physics.add.sprite(70, 320, 'mano1');
         this.mano1.body.immovable = true;
         this.bola.setBounce(10);
@@ -43,9 +42,8 @@ class Escena extends Phaser.Scene {
         this.physics.add.collider(this.bola, this.mano1);
         this.mano1.setCollideWorldBounds(true);
 
-        // Segundo jugador
         this.mano2 = this.physics.add.sprite(882, 320, 'mano2');
-        this.mano2.flipX = true; // Voltear horizontalmente
+        this.mano2.flipX = true; 
         this.mano2.body.immovable = true;
         this.mano2.setSize(60, 250);
         this.physics.add.collider(this.bola, this.mano2);
@@ -75,10 +73,9 @@ class Escena extends Phaser.Scene {
     }
 
     update() {
-        // Rotación de la bola
         this.bola.rotation += 0.1;
     
-        // Verificación de colisión con los bordes y actualización del marcador
+
         if (this.bola.x < 0 && !this.alguienGano) {
             this.alguienGano = true;
             this.marcadorMano2.text = parseInt(this.marcadorMano2.text) + 1;
@@ -93,7 +90,6 @@ class Escena extends Phaser.Scene {
             this.marcadorMano1.text = parseInt(this.marcadorMano1.text) + 1;
             if (parseInt(this.marcadorMano1.text) >= 3) {
                 alert('¡Jugador 1 ha ganado!');
-                // Redirigir al jugador al nivel 2
                 targetUrl();
             } else {
                 this.resetRound();
@@ -112,7 +108,6 @@ class Escena extends Phaser.Scene {
             this.mano2.y += 5;
         }
 
-        // Limitar el movimiento de mano1 y mano2 para que no salgan de la escena
         if (this.mano1.y < 0) {
             this.mano1.y = 0;
         } else if (this.mano1.y > this.sys.game.config.height) {
@@ -142,7 +137,6 @@ class Escena extends Phaser.Scene {
     }
 
     resetGame() {
-        // Reiniciar el marcador y colocar la pelota en el centro
         this.marcadorMano1.text = '0';
         this.marcadorMano2.text = '0';
         this.bola.setPosition(480, 320);
@@ -151,8 +145,7 @@ class Escena extends Phaser.Scene {
     resetRound() {
         // Reiniciar la posición de la bola
         this.bola.setPosition(480, 320);
-        
-        // Generar un nuevo ángulo y velocidad
+
         const velocidad = 500;
         let anguloInicial = Math.random() * Math.PI / 2 + Math.PI / 4;
         const derechaOIzq = Math.floor(Math.random() * 2);
@@ -160,15 +153,14 @@ class Escena extends Phaser.Scene {
     
         const vx = Math.sin(anguloInicial) * velocidad;
         const vy = Math.cos(anguloInicial) * velocidad;
-
-        // Establecer la nueva velocidad
+        
         this.bola.body.velocity.x = vx;
         this.bola.body.velocity.y = vy;
 
         // Reiniciar el estado del juego
         this.alguienGano = false;
 
-        // Si alguno de los jugadores alcanza la puntuación límite, redirige al nivel 2
+        
         if (parseInt(this.marcadorMano1.text) >= 3 || parseInt(this.marcadorMano2.text) >= 3) {
             targetUrl();
         }
