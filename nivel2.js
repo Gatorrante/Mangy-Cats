@@ -1,17 +1,17 @@
 function targetUrl() {
-    window.location.href = 'nivel2.html';
+    window.location.href = 'index.html';
 }
 
-class Escena extends Phaser.Scene {
+class Nivel2 extends Phaser.Scene {
     preload() {
-        this.load.image('fondo', 'img/fondo.jpg');
+        this.load.image('fondo', 'img/fondolvl2.jpg');
         this.load.spritesheet('bola', 'img/bola.png', {
             frameWidth: 100,
             frameHeight: 100
         });
 
         this.load.image('mano1', 'img/mano1.png');
-        this.load.image('mano2', 'img/mano2.png');
+        this.load.image('mano2', 'img/mano3.png');
         this.load.image('leftbtn', 'img/flecha.png');
     }
 
@@ -196,16 +196,16 @@ class Escena extends Phaser.Scene {
         });
     }
 }
+  
 
 const config = {
     type: Phaser.AUTO,
     width: 960,
     height: 640,
-    scene: Escena,
+    scene: Nivel2,
     physics: {
         default: 'arcade',
     },
 };
 
 new Phaser.Game(config);
-
