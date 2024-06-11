@@ -4,6 +4,7 @@ function targetUrl() {
 
 class Escena extends Phaser.Scene {
     preload() {
+        this.load.audio('musicaNivel', 'Music/Minigame.mp3');
         this.load.image('fondo', 'img/fondo.jpg');
         this.load.spritesheet('bola', 'img/bola.png', {
             frameWidth: 100,
@@ -16,6 +17,8 @@ class Escena extends Phaser.Scene {
     }
 
     create() {
+        this.music = this.sound.add('musicaNivel', { loop: true });
+        this.music.play();
         this.input.addPointer();
         this.input.addPointer();
         this.input.addPointer();
